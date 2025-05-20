@@ -82,47 +82,77 @@ using namespace std;
 // }
 
 // Kevin and Competition Memories
+// void solve(){
+//     int n,m;
+//     cin>>n>>m;
+//     vector<int> a(n),b(m);
+//     for(int i=0;i<n;i++) cin>>a[i];
+//     for(int i=0;i<m;i++) cin>>b[i];
+//     int ind=-1,rating=a[0];
+//     sort(a.begin(),a.end(),greater<int>());
+//     for(int i=0;i<n;i++){
+//         if(rating==a[i]) break;
+//         ind = i;
+//     }
+//     int point = 0;
+//     for(int i=0;i<m;i++){
+//         if(b[i] <= rating) b[i] = 1e9+7;
+//     }
+//     sort(b.begin(),b.end(),greater<int>());
+//     vector<int> c(m,0);
+//     int cur = 0,l=0,r=0;
+//     while(l<=ind && r<m){
+//         if(a[l] >= b[r]) cur++,l++;
+//         else{
+//             c[r] = cur;
+//             r++; // easy problem
+//         }
+//     }
+//     while(r<m) c[r] = cur,r++;
+//     sort(c.begin(),c.end());
+//     // for(int ele : c) cout<<ele<<" ";
+//     // cout<<endl;
+//     vector<int> ans;
+//     for(int k=1;k<=m;k++){
+//         int sum = 0;
+//         for(int rank=k-1;rank<m;rank+=k){
+//             sum += c[rank]+1;
+//             // cout<<k<<" "<<c[rank]+1<<endl;
+//         }
+//         ans.push_back(sum);
+//     }
+//     for(int ele : ans) cout<<ele<<" ";
+//     cout<<endl;
+// }
+
+// Kevin and Bipartite Graph
 void solve(){
     int n,m;
     cin>>n>>m;
-    vector<int> a(n),b(m);
-    for(int i=0;i<n;i++) cin>>a[i];
-    for(int i=0;i<m;i++) cin>>b[i];
-    int ind=-1,rating=a[0];
-    sort(a.begin(),a.end(),greater<int>());
-    for(int i=0;i<n;i++){
-        if(rating==a[i]) break;
-        ind = i;
+    if(m>=2*n){
+        cout<<"No"<<endl;
+        return;
     }
-    int point = 0;
-    for(int i=0;i<m;i++){
-        if(b[i] <= rating) b[i] = 1e9+7;
+    vector<int> sample(2*n,0);
+    int cur = 1;
+    for(int i=0;i<2*n;i+=2){
+        sample[i] = cur;
+        sample[i+1] = cur;
+        cur++;
     }
-    sort(b.begin(),b.end(),greater<int>());
-    vector<int> c(m,0);
-    int cur = 0,l=0,r=0;
-    while(l<=ind && r<m){
-        if(a[l] >= b[r]) cur++,l++;
-        else{
-            c[r] = cur;
-            r++; // easy problem
+    int st = 0;
+    vector<vector<int>> ans(2*n,vector<int>(m));
+    for(int j=0;j<m;j++){
+        for(int i=0;i<2*n;i++){
+            ans[i][j] = sample[(i+st)%(2*n)];
         }
+        st++;
     }
-    while(r<m) c[r] = cur,r++;
-    sort(c.begin(),c.end());
-    // for(int ele : c) cout<<ele<<" ";
-    // cout<<endl;
-    vector<int> ans;
-    for(int k=1;k<=m;k++){
-        int sum = 0;
-        for(int rank=k-1;rank<m;rank+=k){
-            sum += c[rank]+1;
-            // cout<<k<<" "<<c[rank]+1<<endl;
-        }
-        ans.push_back(sum);
+    cout<<"Yes"<<endl;
+    for(int i=0;i<2*n;i++){
+        for(int j=0;j<m;j++) cout<<ans[i][j]<<" ";
+        cout<<endl;
     }
-    for(int ele : ans) cout<<ele<<" ";
-    cout<<endl;
 }
 
 int32_t main(){
