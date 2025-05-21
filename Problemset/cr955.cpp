@@ -13,165 +13,114 @@ using namespace std;
 // template <class T> using oset = tree<T, null_type, less<T>, rb_tree_tag,tree_order_statistics_node_update>;
 
 // void solve(){
-//     int x1,y1,x2,y2;
-//     cin>>x1>>y1>>x2>>y2;
-//     if((x1>y1 && x2<y2) || (x1<y1 && x2>y2)) cout<<"No"<<endl;
-//     else cout<<"Yes"<<endl;
-    
-// }
-
-// Collatz Conjecture
-// void solve(){
-//     int x,y,k;
-//     cin>>x>>y>>k;
-//     x++,k--;
-//     int req = (y-(x%y))%y;
-//     while(k>=req){
-//         x += req;
-//         while(x%y==0) x /= y;
-//         k-=req;
-//         req = (y-(x%y))%y;
-//         if(x == 1) break;
-//         // cout<<x<<" "<<k<<' '<<req<<endl;
-//     }
-//     // cout<<x<<" "<<k<<' '<<req<<endl;
-//     int ans = x + k;
-//     if(x == 1){
-//         ans -= k;
-//         ans += (k%(y-1));
-//     }
-//     cout<<ans<<endl;
-
-// }
-
-// Boring Day
-// method 1 : dp + binary search on  the prefix sum
-// int search(vector<int> &pre,int l,int r,int cur){
-//     int lo = 1,hi = cur;
-//     int ans = -1;
-//     while(lo<=hi){
-//         int mid = (lo+hi)/2;
-//         int req = pre[cur] - pre[mid-1];
-//         if(req>=l && req<=r){
-//             ans = mid;
-//             lo = mid+1;
-//         }
-//         if(req>r) lo = mid+1;
-//         else if(req<l) hi = mid-1;
-//     }
-//     return ans;
-// }
-
-// void solve(){
-//     int n,l,r;
-//     cin>>n>>l>>r;
-//     int arr[n];
-//     for(int i=0;i<n;i++) cin>>arr[i];
-//     vector<int> pre(n+1,0);
-//     for(int i=1;i<=n;i++) pre[i] += pre[i-1] + arr[i-1];
-//     vector<int> dp(n+1,0);
-//     for(int i=1;i<=n;i++){
-//         if(arr[i-1]>r) dp[i] = dp[i-1];
-//         else{
-//             int ind = search(pre,l,r,i);
-//             // cout<<ind<<"*"<<i<<endl;
-//             if(ind == -1) dp[i] = dp[i-1];
-//             else dp[i] = max(dp[i-1],1+dp[ind-1]);
-//         }
-//     }
-//     // for(int i=0;i<=n;i++) cout<<dp[i]<<" ";
-//     // cout<<endl;
-//     cout<<dp[n]<<endl;
-// }   
-
-// method 2 : two pointers / sliding window
-// void solve(){
-//     int n,l,r;
-//     cin>>n>>l>>r;
-//     int arr[n];
-//     for(int i=0;i<n;i++) cin>>arr[i];
-//     int lo=0,hi=0,sum=0,ans = 0;
-//     while(hi<n){
-//         sum += arr[hi];
-//         while(sum>r && lo<=hi){
-//             sum-=arr[lo];
-//             lo++;
-//         }
-//         if(sum>=l && sum<=r){
-//             ans++;
-//             sum = 0;
-//             lo = hi+1;
-//         }
-//         hi++;
+//     int n;cin>>n;
+//     int a[n],b[n];
+//     for(int i=0;i<n;i++) cin>>a[i];
+//     for(int i=0;i<n;i++) cin>>b[i];
+//     int ans = a[n-1];
+//     for(int i=0;i<n-1;i++){
+//         int diff = a[i]-b[i+1];
+//         if(diff>0) ans += diff;
 //     }
 //     cout<<ans<<endl;
 // }
 
-// Beauty of the mountains
+// void solve(){
+//     int n,a,b,c;
+//     cin>>n>>a>>b>>c;
+//     int arr[4] = {a,a+b,a+b+c};
+//     int left = n%arr[2];
+//     int ans = (n/arr[2])*3;
+//     // cout<<ans<<" "<<left<<" "<<arr[2]<<endl;
+//     for(int i=0;i<3;i++){
+//         if(left == 0) break;
+//         if(left <= arr[i]){
+//             ans += i + 1;
+//             break;
+//         }
+//     }
+//     cout<<ans<<endl;
+// }
+
+// void print(vector<char> &v){
+//     for(char &ele : v) cout<<ele;
+//     cout<<endl;
+// }
+
+// void solve(){
+//     int n,m,k;
+//     cin>>n>>m>>k;
+//     int a[m],q[k];
+//     for(int i=0;i<m;i++) cin>>a[i];
+//     for(int j=0;j<k;j++) cin>>q[j];
+//     vector<char> ans(m,'1');
+//     if(k==n){
+//         print(ans);
+//     }else if(k==n-1){
+//         vector<bool> arr(n+1,0);
+//         for(int i=0;i<k;i++) arr[q[i]] = 1;
+//         int ind = 1;
+//         for(int i=1;i<=n;i++){
+//             if(!arr[i]) ind = i;
+//         }
+//         for(int i=0;i<m;i++){
+//             if(a[i] != ind) ans[i] = '0';
+//         }
+//         print(ans);
+//     }else{
+//         for(int i=0;i<m;i++) ans[i] = '0';
+//         print(ans);
+//     }
+// }
+
+// Counting Pairs
+// void solve(){
+//     int n,x,y;
+//     cin>>n>>x>>y;
+//     vector<int> arr(n);
+//     for(int i=0;i<n;i++) cin>>arr[i];
+//     sort(arr.begin(),arr.end());
+//     int sum = accumulate(arr.begin(),arr.end(),0ll);
+//     int ans = 0;
+//     for(int i=0;i<n;i++){
+//         int l = lower_bound(arr.begin()+i+1,arr.end(),sum-(arr[i]+y)) - arr.begin();
+//         int r = upper_bound(arr.begin()+i+1,arr.end(),sum-(arr[i]+x)) - arr.begin();
+//         r--;
+//         if(l>r) continue;
+//         ans += (r-l+1);
+//     }
+//     cout<<ans<<endl;
+// }
+
+// Best Price
 void solve(){
-    int n,m,k;
-    cin>>n>>m>>k;
-    vector<vector<int>> range(n+1,vector<int>(m+1));
-    vector<vector<char>> type(n+1,vector<char>(m+1));
-    for(int i=1;i<=n;i++){
-        for(int j=1;j<=m;j++) cin>>range[i][j];
-    }
-    for(int i=1;i<=n;i++){
-        string s;cin>>s;
-        for(int j=1;j<=m;j++) type[i][j] = s[j-1];
-    }
-    int x=0,y=0;
-    for(int i=1;i<=n;i++){
-        for(int j=1;j<=m;j++){
-            if(type[i][j] == '0') x+=range[i][j];
-            else y+=range[i][j];
+    int n,k;
+    cin>>n>>k;
+    vector<int> a(n),b(n);
+    set<int> st;
+    for(int i=0;i<n;i++) cin>>a[i],st.insert(a[i]);
+    for(int i=0;i<n;i++) cin>>b[i],st.insert(b[i]);
+    sort(a.begin(),a.end());
+    sort(b.begin(),b.end());
+    int ans = 0;
+    for(int cost : st){
+        int buy = n-(lower_bound(b.begin(),b.end(),cost) - b.begin());
+        int negative = lower_bound(a.begin(),a.end(),cost) - a.begin();
+        // p > a[i] in those for p>b[i]
+        negative -= lower_bound(b.begin(),b.end(),cost) - b.begin();
+        // cout<<cost<<" "<<buy<<" "<<negative<<endl;
+        if(negative <= k){
+            ans = max(ans,buy*cost);
         }
     }
-    // cout<<x<<" "<<y<<endl;
-    if(x==y){
-        cout<<"Yes"<<endl;
-        return;
-    }
-
-    // calculating the 2d prefix sum
-    vector<vector<int>> prefix(n+1,vector<int>(m+1,0));
-    for(int i=1;i<=n;i++){
-        for(int j=1;j<=m;j++){
-            prefix[i][j] = (type[i][j] - '0') + prefix[i-1][j] + prefix[i][j-1] - prefix[i-1][j-1];
-            // cout<<prefix[i][j]<<" ";
-        }
-        // cout<<endl;
-    }
-    // cout<<"*"<<endl;
-    // diophantite equation
-    int gcd = 0;
-    for(int i=1;i<=n;i++){
-        for(int j=1;j<=m;j++){
-            int nx = i-k+1,ny = j-k+1;
-            if(nx>0 && ny>0){
-                int be = prefix[i][j] - (prefix[i][ny-1] + prefix[nx-1][j] - prefix[nx-1][ny-1]);
-                int al = (k*k)-be;
-                int diff = abs(x-y);
-                int num = abs(al-be);
-                // cout<<diff<<" "<<al<<" "<<be<<endl;
-                if(num == 0) continue;
-                gcd = __gcd(gcd,num);
-                if(diff%gcd == 0){
-                    cout<<"Yes"<<endl;
-                    return;
-                }
-            }
-        }
-    }
-
-    cout<<"No"<<endl;
+    cout<<ans<<endl;
 }
 
 int32_t main(){
     freopen("input.txt","r",stdin);
     freopen("output.txt","w",stdout);
 
-    // FIO;
+    FIO;
     int t;cin>>t;
     while(t--){
       solve();
