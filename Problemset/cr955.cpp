@@ -93,27 +93,178 @@ using namespace std;
 // }
 
 // Best Price
+// void solve(){
+//     int n,k;
+//     cin>>n>>k;
+//     vector<int> a(n),b(n);
+//     set<int> st;
+//     for(int i=0;i<n;i++) cin>>a[i],st.insert(a[i]);
+//     for(int i=0;i<n;i++) cin>>b[i],st.insert(b[i]);
+//     sort(a.begin(),a.end());
+//     sort(b.begin(),b.end());
+//     int ans = 0;
+//     for(int cost : st){
+//         int buy = n-(lower_bound(b.begin(),b.end(),cost) - b.begin());
+//         int negative = lower_bound(a.begin(),a.end(),cost) - a.begin();
+//         // p > a[i] in those for p>b[i]
+//         negative -= lower_bound(b.begin(),b.end(),cost) - b.begin();
+//         if(negative <= k){
+//             ans = max(ans,buy*cost);
+//         }
+//     }
+//     cout<<ans<<endl;
+// }
+
+// Joker
+// void merge(vector<pair<int,int>> &vp){
+//     sort(vp.begin(),vp.end());
+//     int l=0,r=0;
+//     vector<pair<int,int>> temp;
+//     int n = vp.size();
+//     for(int i=0;i<n;i++){
+//         if(vp[i].first > r){
+//             if(r!=0){
+//                 temp.push_back({l,r});
+//             }
+//             l = vp[i].first,r = vp[i].second;
+//         }else r = max(r,vp[i].second);
+//         if(i==n-1) temp.push_back({l,r});
+//     }
+//     vp = temp;
+// }
+
+// void solve(){
+//     int n,m,q;
+//     cin>>n>>m>>q;
+//     int a[q];
+//     for(int i=0;i<q;i++) cin>>a[i];
+//     int l = m,r = m;
+//     vector<pair<int,int>> seg;
+//     // base case
+//     if(a[0] == m){
+//         seg.push_back({1,1});
+//         seg.push_back({n,n});
+//     }else{
+//         if(a[0] > m) seg.push_back({l,r+1});
+//         else seg.push_back({l-1,r});
+//     }
+//     cout<<2<<" ";
+//     for(int i=1;i<q;i++){
+//         vector<pair<int,int>> temp;
+//         for(int j=0;j<seg.size();j++){
+//             l = seg[j].first, r = seg[j].second;
+//             if(a[i] < l) temp.push_back({l-1,r});
+//             else if(a[i] > r) temp.push_back({l,r+1});
+//             else{
+//                 temp.push_back({l,r});
+//                 temp.push_back({1,1});
+//                 temp.push_back({n,n});
+//             }
+//         }
+//         merge(temp);
+//         seg = temp;
+//         int cnt = 0;
+//         for(int i=0;i<seg.size();i++) cnt += (seg[i].second-seg[i].first + 1);
+//         cout<<cnt<<" ";
+//     }
+//     cout<<endl;
+// }
+
+// Snakes
+int n,q;
+ 
+// int f(int mask,int last,vector<vector<int>> &cost,vector<vector<int>> &dp){
+//     // base case
+//     if(mask == (1<<n)-1){
+//         return 0;
+//     }
+
+//     if(dp[mask][last] != -1) return dp[mask][last];
+ 
+//     int ans = INT_MAX;
+//     for(int i=0;i<n;i++){
+//         if(!(mask&(1<<i))){
+//             // cout<<last<<" "<<i+1<<endl;
+//             int temp = f(mask|(1<<i),i+1,cost,dp) + cost[last][i+1];
+//             ans = min(ans,temp);
+//         }
+//     }
+//     // cout<<last<<" "<<ans<<endl;
+//     return dp[mask][last] = ans;
+// }
+ 
 void solve(){
-    int n,k;
-    cin>>n>>k;
-    vector<int> a(n),b(n);
-    set<int> st;
-    for(int i=0;i<n;i++) cin>>a[i],st.insert(a[i]);
-    for(int i=0;i<n;i++) cin>>b[i],st.insert(b[i]);
-    sort(a.begin(),a.end());
-    sort(b.begin(),b.end());
-    int ans = 0;
-    for(int cost : st){
-        int buy = n-(lower_bound(b.begin(),b.end(),cost) - b.begin());
-        int negative = lower_bound(a.begin(),a.end(),cost) - a.begin();
-        // p > a[i] in those for p>b[i]
-        negative -= lower_bound(b.begin(),b.end(),cost) - b.begin();
-        // cout<<cost<<" "<<buy<<" "<<negative<<endl;
-        if(negative <= k){
-            ans = max(ans,buy*cost);
+    cin>>n>>q;
+    vector<pair<int,char>> vp;
+    for(int i=0;i<q;i++){
+        int num;char c;
+        cin>>num>>c;
+        vp.push_back({num,c});
+    }
+    vector<vector<int>> cost(n+1,vector<int>(n+1,0));
+    // initialization of the cost
+    for(int j=1;j<=n;j++){
+        int cnt = 1;
+        for(int k=0;k<q;k++){
+            int num = vp[k].first;
+            char c = vp[k].second;
+            if(j == num && c == '+') cnt++;
+        }
+        cost[0][j] = cnt;
+    }
+ 
+    for(int i=1;i<=n;i++){
+        for(int j=1;j<=n;j++){
+            if(i==j) continue;
+            int l1 = 1,l2 = 2;
+            int len1 = 0,len2 = 0;
+            for(int k=0;k<q;k++){
+                int num = vp[k].first;
+                char c = vp[k].second;
+                if(i == num){
+                    if(c == '+'){
+                        len1++;
+                    }else{
+                        l1++;
+                        len1--;
+                    }
+                }else if(j == num){
+                    if(c == '+'){
+                        len2++;
+                    }else{
+                        l2++;
+                        len2--;
+                    }
+                }
+                if(l1 + len1 == l2) l2++; // collision
+            }
+            // cout<<i<<" "<<j<<" "<<l1<<" "<<len1<<" "<<l2<<" "<<len2<<endl;
+            cost[i][j] = (l2+len2)-(l1+len1);
         }
     }
-    cout<<ans<<endl;
+ 
+    if(n==1){
+        cout<<cost[0][1]<<endl;
+        return;
+    }
+    vector<vector<int>> dp((1<<n),vector<int>(n+1,INT_MAX));
+    
+    // int ans = f(0,0,cost,dp);
+    for(int i=0;i<=n;i++) dp[(1<<n)-1][i] = 0;
+
+    for(int mask=(1<<n)-2;mask>=0;mask--){
+        for(int last=n;last>=0;last--){
+            for(int i=0;i<n;i++){
+                if(!(mask&(1<<i))){
+                    // cout<<last<<" "<<i+1<<endl;
+                    int temp = dp[mask|(1<<i)][i+1] + cost[last][i+1];
+                    dp[mask][last] = min(dp[mask][last],temp);
+                }
+            }
+        }
+    }
+
+    cout<<dp[0][0]<<endl;
 }
 
 int32_t main(){
@@ -121,10 +272,10 @@ int32_t main(){
     freopen("output.txt","w",stdout);
 
     FIO;
-    int t;cin>>t;
-    while(t--){
-      solve();
-    }
-
+    // int t;cin>>t;
+    // while(t--){
+    //   solve();
+    // }
+    solve();
     return 0;
 }
