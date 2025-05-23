@@ -29,8 +29,6 @@ using namespace std;
 // Digits
 void solve(){
     int n,d;cin>>n>>d;
-    n = min(n,9ll);
-    for(int i=1;i<=n;i++) d *= i;
     vector<int> ans;
     for(int i=1;i<10;i+=2) if(d%i==0) ans.push_back(i);
     for(int &ele : ans) cout<<ele<<" ";
