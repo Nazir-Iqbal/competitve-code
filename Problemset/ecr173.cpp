@@ -27,10 +27,22 @@ using namespace std;
 // }
 
 // Digits
+bool check(int n,int d){
+    int num = 1;
+    for(int i=1;i<=n;i++) num*=i;
+    // cout<<num<<" "<<n<<" "<<d<<endl;
+    num*=d;
+    return (num%9==0);
+}
+
 void solve(){
     int n,d;cin>>n>>d;
     vector<int> ans;
-    for(int i=1;i<10;i+=2) if(d%i==0) ans.push_back(i);
+    ans.push_back(1);
+    if(d%3==0 || (n>2)) ans.push_back(3);
+    if(d%5 == 0) ans.push_back(5);
+    if(d%7 == 0 || (n>2)) ans.push_back(7);
+    if(d%9==0 || (n>5) || (check(n,d))) ans.push_back(9);
     for(int &ele : ans) cout<<ele<<" ";
     cout<<endl;
 }
