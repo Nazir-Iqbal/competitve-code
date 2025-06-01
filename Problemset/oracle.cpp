@@ -6,39 +6,73 @@ using namespace std;
 #define FIO             ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0)
 // using namespace __gnu_pbds;
 
-#define int long long
+// #define int long long
 // #define nline "\n" 
 
 // priority_queue <int, vector<int>, greater<int>> pq;
 // template <class T> using oset = tree<T, null_type, less<T>, rb_tree_tag,tree_order_statistics_node_update>;
 
-void f(int end,int ind,int arr[],int sum,unordered_map<int,int> &mp){
-    if(ind > end){
-        // cout<<sum<<endl;
-        mp[sum]++;
+class TreeNode{
+    public:
+    int data;
+    TreeNode * left;
+    TreeNode * right;
+    TreeNode(int val){
+        this->data = val;
+        left = NULL;
+        right = NULL;
+    }
+};
+
+void dfs(TreeNode * root,string sum,long long &total){
+    if(root->left == NULL && root->right == NULL){
+        sum += to_string(root->data);
+        total += stoll(sum);
         return;
     }
-    // taking the element;
-    f(end,ind+1,arr,sum+arr[ind],mp);
-    // not taking element
-    f(end,ind+1,arr,sum,mp);
+
+    if(root->left != NULL) dfs(root->left,sum+to_string(root->data),total);
+    if(root->right != NULL) dfs(root->right,sum+to_string(root->data),total);
+}
+
+void insert(TreeNode * root,string &s,int ind,int val){
+    if(ind == s.size()-1){
+        // cout<<root->data<<" "<<ind<<" "<<s[ind]<<endl;
+        if(s[ind] == 'L') root->left = new TreeNode(val);
+        else root->right = new TreeNode(val);
+        return;
+    }
+
+    if(s[ind] == 'L') insert(root->left,s,ind+1,val);
+    else insert(root->right,s,ind+1,val);
+}
+
+long long calculateSum(int n,int root,string pos[],int val[]){
+
+    vector<pair<string,int>> vp;
+    for(int i=0;i<n-1;i++) vp.push_back({pos[i],val[i]});
+    sort(vp.begin(),vp.end());
+    TreeNode * base = new TreeNode(root);
+    for(int i=0;i<n-1;i++){
+        // cout<<vp[i].first<<" "<<vp[i].second<<endl;
+        insert(base,vp[i].first,0,vp[i].second);
+    }
+    
+    long long sum = 0;
+    dfs(base,"",sum);
+    return sum;
 }
 
 void solve(){
-    int n,x;
-    cin>>n>>x;
-    int arr[n];
-    for(int i=0;i<n;i++) cin>>arr[i];
-    unordered_map<int,int> m1,m2;
-    f((n - 1)/2, 0, arr, 0, m1);
-    f(n - 1, (n - 1)/2 + 1,  arr, 0, m2);
-    int ans = 0;
-    for(auto &ele : m1){
-        // cout<<ele.first<<" "<<ele.second<<endl;
-        int left = x - ele.first;
-        ans += ele.second * m2[left];
+    int n;cin>>n;
+    int root;cin>>root;
+    string str[n-1];
+    int val[n-1];
+    for(int i=0;i<n-1;i++){
+        cin>>str[i];
+        cin>>val[i];
     }
-    cout<<ans<<endl;
+    cout<<calculateSum(n,root,str,val);
 }
 
 int32_t main(){
@@ -46,10 +80,7 @@ int32_t main(){
     freopen("output.txt","w",stdout);
 
     FIO;
-    // int t;cin>>t;
-    // while(t--){
-    //   solve();
-    // }
     solve();
+
     return 0;
 }
