@@ -56,34 +56,32 @@ using namespace std;
 //     cout<<ans<<endl;
 // }
 
-// pair<int,int> f(int l,int r,map<int,pair<int,int>> &dp,int k){
-//     if((r-l+1)<k || l>r) return {0,0};
-//     // cout<<l<<" "<<r<<endl;
+// using the shifting
+// pair<int,int> f(int l,int r,int k,map<int,pair<int,int>> &dp){
 //     int len = (r-l+1);
+//     if(l>r || len < k ) return {0,0};
+
 //     if(dp.find(len) != dp.end()){
-//         int val =  dp[len].first;
-//         int ele = dp[len].second;
-//         int shift = l-1;
-//         return {val + ele*shift , ele};
+//         return {dp[len].first + dp[len].second*(l-1) , dp[len].second};
 //     }
 
 //     int mid = (len+1)/2;
 //     if(len&1){
 //         if(len != 1){
-//             auto left = f(l,mid-1,dp,k);
-//             auto right = f(mid+1,r,dp,k);
-//             pair<int,int> lr = {left.first + right.first + mid,left.second + right.second + 1};
-//             dp[len] = {lr.first - lr.second*(l-1), lr.second};
+//             pair<int,int> left = f(l,mid-1,k,dp);
+//             pair<int,int> right = f(mid+1,r,k,dp);
+//             pair<int,int> lr = {left.first+right.first + mid, left.second + right.second + 1};
+//             dp[len] = {lr.first - (l-1)*lr.second,lr.second};
 //             return lr;
 //         }else{
-//             dp[len] = {1,1};
+//             dp[1] = {1,1};
 //             return {l,1};
 //         }
 //     }else{
-//         auto left = f(l,mid,dp,k);
-//         auto right = f(mid+1,r,dp,k);
-//         pair<int,int> lr = {left.first + right.first,left.second + right.second};
-//         dp[len] = {lr.first - lr.second*(l-1), lr.second};
+//         pair<int,int> left = f(l,mid,k,dp);
+//         pair<int,int> right = f(mid+1,r,k,dp);
+//         pair<int,int> lr = {left.first+right.first, left.second + right.second};
+//         dp[len] = {lr.first - (l-1)*lr.second,lr.second};
 //         return lr;
 //     }
 // }
@@ -92,22 +90,21 @@ using namespace std;
 //     int n,k;
 //     cin>>n>>k;
 //     map<int,pair<int,int>> dp;
-//     cout<<f(1,n,dp,k).first<<endl;
+//     cout<<f(1,n,k,dp).first<<endl;
 // }
 
 // using the symmetry to solve the problem
 void solve(){
     int n,k;
     cin>>n>>k;
-    int sum = 0,ele = 1;
+    int cur = 1,sum = 0;
     int mul = (n+1);
     while(n>=k){
-        if(n&1) sum += ele;
+        if(n&1) sum += cur;
         n>>=1;
-        ele<<=1;
+        cur<<=1;
     }
-    int ans = (mul*sum)/2;
-    cout<<ans<<endl;
+    cout<<mul*sum/2<<endl;
 }
 
 int32_t main(){
