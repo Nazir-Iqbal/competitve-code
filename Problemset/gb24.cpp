@@ -109,86 +109,136 @@ using namespace std;
 // }
 
 // Refined Product Optimality
-int MOD = 998244353;
-struct mint {
-  long long x;
-  mint(long long x=0):x((x%MOD+MOD)%MOD){}
-  mint& operator+=(const mint a) {if ((x += a.x) >= MOD) x -= MOD;return *this;}
-  mint& operator-=(const mint a) {if ((x += MOD-a.x) >= MOD) x -= MOD;return *this;}
-  mint& operator*=(const mint a) {(x *= a.x) %= MOD;return *this;}
-  mint operator+(const mint a) const {mint res(*this);return res+=a;}
-  mint operator-(const mint a) const {mint res(*this);return res-=a;}
-  mint operator*(const mint a) const {mint res(*this);return res*=a;}
-  mint pow(long long b) const {
-    mint res(1), a(*this);
-    while (b) {
-      if (b & 1) res *= a;
-      a *= a;
-      b >>= 1;
-    }
-    return res;
-  }
-  // for prime MOD
-  mint inv() const {return pow(MOD-2);}
-  mint& operator/=(const mint a) {return (*this) *= a.inv();}
-  mint operator/(const mint a) const {mint res(*this);return res/=a;}
+// int MOD = 998244353;
+// struct mint {
+//   long long x;
+//   mint(long long x=0):x((x%MOD+MOD)%MOD){}
+//   mint& operator+=(const mint a) {if ((x += a.x) >= MOD) x -= MOD;return *this;}
+//   mint& operator-=(const mint a) {if ((x += MOD-a.x) >= MOD) x -= MOD;return *this;}
+//   mint& operator*=(const mint a) {(x *= a.x) %= MOD;return *this;}
+//   mint operator+(const mint a) const {mint res(*this);return res+=a;}
+//   mint operator-(const mint a) const {mint res(*this);return res-=a;}
+//   mint operator*(const mint a) const {mint res(*this);return res*=a;}
+//   mint pow(long long b) const {
+//     mint res(1), a(*this);
+//     while (b) {
+//       if (b & 1) res *= a;
+//       a *= a;
+//       b >>= 1;
+//     }
+//     return res;
+//   }
+//   // for prime MOD
+//   mint inv() const {return pow(MOD-2);}
+//   mint& operator/=(const mint a) {return (*this) *= a.inv();}
+//   mint operator/(const mint a) const {mint res(*this);return res/=a;}
 
-  // Relational operators
-  bool operator<(const mint& a) const { return x < a.x; }
-  bool operator>(const mint& a) const { return x > a.x; }
-  bool operator<=(const mint& a) const { return x <= a.x; }
-  bool operator>=(const mint& a) const { return x >= a.x; }
-  bool operator==(const mint& a) const { return x == a.x; }
-  bool operator!=(const mint& a) const { return x != a.x; }
-};
-ostream& operator<<(ostream& os, const mint& a) {os << a.x; return os;}
+//   // Relational operators
+//   bool operator<(const mint& a) const { return x < a.x; }
+//   bool operator>(const mint& a) const { return x > a.x; }
+//   bool operator<=(const mint& a) const { return x <= a.x; }
+//   bool operator>=(const mint& a) const { return x >= a.x; }
+//   bool operator==(const mint& a) const { return x == a.x; }
+//   bool operator!=(const mint& a) const { return x != a.x; }
+// };
+// ostream& operator<<(ostream& os, const mint& a) {os << a.x; return os;}
 
+// int bs(mint x,vector<pair<mint,int>> &vp){
+//     int l = 0,r = vp.size()-1;
+//     int ans = -1;
+//     while(l<=r){
+//         int mid = (l+r)/2;
+//         if(vp[mid].first == x){
+//             ans = mid;
+//             l = mid+1;
+//         }else if(vp[mid].first < x) l = mid+1;
+//         else r = mid-1;
+//     }
+//     return ans;
+// }
+
+// void solve(){
+//     int n,q;
+//     cin>>n>>q;
+//     vector<mint> a(n),b(n);
+//     for(int i=0;i<n;i++) cin>>a[i].x;
+//     for(int i=0;i<n;i++) cin>>b[i].x;
+//     vector<pair<mint,int>> vp1,vp2;
+//     unordered_map<int,int> mp1,mp2;
+//     for(int i=0;i<n;i++) vp1.push_back({a[i],i});
+//     for(int i=0;i<n;i++) vp2.push_back({b[i],i});
+//     sort(vp1.begin(),vp1.end());
+//     sort(vp2.begin(),vp2.end());
+
+//     for(int i=0;i<n;i++) mp1[vp1[i].second] = i;
+//     for(int i=0;i<n;i++) mp2[vp2[i].second] = i;
+
+//     mint ans = 1;
+//     for(int i=0;i<n;i++) ans = ans * min(vp1[i].first,vp2[i].first);
+
+//     cout<<ans.x<<" ";
+//     while(q--){
+//         int o,x;
+//         cin>>o>>x;
+//         x--;
+
+//         if(o==1){
+//             int ind = mp1[x];
+//             mint ele = vp1[ind].first;
+//             int last = bs(ele,vp1);
+//             swap(vp1[ind],vp1[last]);
+//             ans = ans/min(vp1[last].first,vp2[last].first);
+//             // cout<<ind<<"$"<<last<<" "<<ele<<" "<<ans<<endl;
+//             vp1[last].first += 1;
+//             ans = ans * min(vp1[last].first,vp2[last].first);
+//             // cout<<ind<<"$"<<last<<" "<<ele<<" "<<ans<<endl;
+//             mp1[vp1[last].second] = last;
+//             mp1[vp1[ind].second] = ind;
+            
+//         }else{
+//             int ind = mp2[x];
+//             mint ele = vp2[ind].first;
+//             int last = bs(ele,vp2);
+//             // cout<<ind<<"*"<<last<<" "<<ele<<endl;
+//             swap(vp2[ind],vp2[last]);
+//             ans /= min(vp2[last].first,vp1[last].first);
+//             vp2[last].first += 1;
+//             ans = ans * min(vp2[last].first,vp1[last].first);
+//             mp2[vp2[last].second] = last;
+//             mp2[vp2[ind].second] = ind;
+//         }
+
+//         cout<<ans.x<<" ";
+//     }
+//     cout<<endl;
+// }
+
+// Resourceful Caterpillar Sequence
 void solve(){
-    int n,q;
-    cin>>n>>q;
-    vector<mint> a(n),b(n);
-    for(int i=0;i<n;i++) cin>>a[i].x;
-    for(int i=0;i<n;i++) cin>>b[i].x;
-    vector<pair<mint,int>> vp;
-    for(int i=0;i<n;i++) vp.push_back({a[i],i});
-    sort(vp.begin(),vp.end());
-    sort(b.begin(),b.end());
-    map<int,int> mp;
-    for(int i=0;i<n;i++) mp[vp[i].second] = i;
-    mint ans = 1;
-    // finding the current maximum answer
-    for(int i=0;i<n;i++) ans = (ans * min(vp[i].first,b[i]));
-    while(q--){
-        int o,x;
-        cin>>o>>x;
-        if(o==1){
-            x--;
-            int ind = mp[x];
-            int cur = ind + 1;
-            while(cur < n && a[cur].x < a[ind].x){
-                ans = ans/min(vp[cur].first,b[cur]);
-                ans = ans/min(vp[ind].first,b[ind]);
-                swap(ind,cur);
-                ans = ans*min(vp[cur].first,b[cur]);
-                ans = ans*min(vp[ind].first,b[ind]);
-                mp[x] = ind;
-                cur = ind+1;
-            }
-        }else{
-            x--;
-            int ind = x;
-            int cur = ind + 1;
-            while(cur < n && a[cur].x < a[ind].x){
-                ans = ans/min(vp[cur].first,b[cur]);
-                ans = ans/min(vp[ind].first,b[ind]);
-                swap(ind,cur);
-                ans = ans*min(vp[cur].first,b[cur]);
-                ans = ans*min(vp[ind].first,b[ind]);
-                cur = ind+1;
-            }
-        }
-        cout<<ans.x<<endl;
+    int n;cin>>n;
+    vector<int> adj[n+1];
+    vector<pair<int,int>> vp;
+    for(int i=0;i<n-1;i++){
+        int u,v;
+        cin>>u>>v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+        vp.push_back({u,v});
     }
+    int ans = 0;
+    unordered_set<int> lnode;
+    for(int i=1;i<=n;i++) if(adj[i].size()==1) lnode.insert(i);
+    ans = lnode.size()*(n-lnode.size());
+    vector<int> inadj[n+1];
+    for(int i=0;i<n;i++){
+        int u = vp[i].first;
+        int v = vp[i].second;
+        if(lnode.count(u) || lnode.count(v)) continue;
+        inadj[u].push_back(v);
+        inadj[v].push_back(u);
+    }
+
+    cout<<ans<<endl;
 }
 
 int32_t main(){
