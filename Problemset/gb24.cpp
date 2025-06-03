@@ -96,18 +96,101 @@ using namespace std;
 // }
 
 // using the symmetry to solve the problem
-void solve(){
-    int n,k;
-    cin>>n>>k;
-    int sum = 0,ele = 1;
-    int mul = (n+1);
-    while(n>=k){
-        if(n&1) sum += ele;
-        n>>=1;
-        ele<<=1;
+// void solve(){
+//     int n,k;
+//     cin>>n>>k;
+//     int sum = 0,ele = 1;
+//     int mul = (n+1);
+//     while(n>=k){
+//         if(n&1) sum += ele;
+//         n>>=1;
+//         ele<<=1;
+//     }
+//     int ans = (mul*sum)/2;
+//     cout<<ans<<endl;
+// }
+
+// Refined Product Optimality
+int MOD = 998244353;
+struct mint {
+  long long x;
+  mint(long long x=0):x((x%MOD+MOD)%MOD){}
+  mint& operator+=(const mint a) {if ((x += a.x) >= MOD) x -= MOD;return *this;}
+  mint& operator-=(const mint a) {if ((x += MOD-a.x) >= MOD) x -= MOD;return *this;}
+  mint& operator*=(const mint a) {(x *= a.x) %= MOD;return *this;}
+  mint operator+(const mint a) const {mint res(*this);return res+=a;}
+  mint operator-(const mint a) const {mint res(*this);return res-=a;}
+  mint operator*(const mint a) const {mint res(*this);return res*=a;}
+  mint pow(long long b) const {
+    mint res(1), a(*this);
+    while (b) {
+      if (b & 1) res *= a;
+      a *= a;
+      b >>= 1;
     }
-    int ans = (mul*sum)/2;
-    cout<<ans<<endl;
+    return res;
+  }
+  // for prime MOD
+  mint inv() const {return pow(MOD-2);}
+  mint& operator/=(const mint a) {return (*this) *= a.inv();}
+  mint operator/(const mint a) const {mint res(*this);return res/=a;}
+
+  // Relational operators
+  bool operator<(const mint& a) const { return x < a.x; }
+  bool operator>(const mint& a) const { return x > a.x; }
+  bool operator<=(const mint& a) const { return x <= a.x; }
+  bool operator>=(const mint& a) const { return x >= a.x; }
+  bool operator==(const mint& a) const { return x == a.x; }
+  bool operator!=(const mint& a) const { return x != a.x; }
+};
+ostream& operator<<(ostream& os, const mint& a) {os << a.x; return os;}
+
+void solve(){
+    int n,q;
+    cin>>n>>q;
+    vector<mint> a(n),b(n);
+    for(int i=0;i<n;i++) cin>>a[i].x;
+    for(int i=0;i<n;i++) cin>>b[i].x;
+    vector<pair<mint,int>> vp;
+    for(int i=0;i<n;i++) vp.push_back({a[i],i});
+    sort(vp.begin(),vp.end());
+    sort(b.begin(),b.end());
+    map<int,int> mp;
+    for(int i=0;i<n;i++) mp[vp[i].second] = i;
+    mint ans = 1;
+    // finding the current maximum answer
+    for(int i=0;i<n;i++) ans = (ans * min(vp[i].first,b[i]));
+    while(q--){
+        int o,x;
+        cin>>o>>x;
+        if(o==1){
+            x--;
+            int ind = mp[x];
+            int cur = ind + 1;
+            while(cur < n && a[cur].x < a[ind].x){
+                ans = ans/min(vp[cur].first,b[cur]);
+                ans = ans/min(vp[ind].first,b[ind]);
+                swap(ind,cur);
+                ans = ans*min(vp[cur].first,b[cur]);
+                ans = ans*min(vp[ind].first,b[ind]);
+                mp[x] = ind;
+                cur = ind+1;
+            }
+        }else{
+            x--;
+            int ind = x;
+            int cur = ind + 1;
+            while(cur < n && a[cur].x < a[ind].x){
+                ans = ans/min(vp[cur].first,b[cur]);
+                ans = ans/min(vp[ind].first,b[ind]);
+                swap(ind,cur);
+                ans = ans*min(vp[cur].first,b[cur]);
+                ans = ans*min(vp[ind].first,b[ind]);
+                cur = ind+1;
+            }
+        }
+        cout<<ans.x<<endl;
+    }
 }
 
 int32_t main(){
