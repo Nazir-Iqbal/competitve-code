@@ -214,30 +214,71 @@ using namespace std;
 // }
 
 // Resourceful Caterpillar Sequence
+// void solve(){
+//     int n;cin>>n;
+//     vector<int> adj[n+1];
+//     vector<pair<int,int>> vp;
+//     for(int i=0;i<n-1;i++){
+//         int u,v;
+//         cin>>u>>v;
+//         adj[u].push_back(v);
+//         adj[v].push_back(u);
+//         vp.push_back({u,v});
+//     }
+//     int ans = 0;
+//     unordered_set<int> lnode;
+//     for(int i=1;i<=n;i++) if(adj[i].size()==1) lnode.insert(i);
+//     ans = lnode.size()*(n-lnode.size());
+//     vector<int> inadj[n+1];
+//     for(int i=0;i<n;i++){
+//         int u = vp[i].first;
+//         int v = vp[i].second;
+//         if(lnode.count(u) || lnode.count(v)) continue;
+//         inadj[u].push_back(v);
+//         inadj[v].push_back(u);
+//     }
+
+//     cout<<ans<<endl;
+// }
+
+// int f(int l,int r,vector<int> &arr,int n){
+//     if(l==0 && r==n-1) return 0;
+//     if(l<0 || r>=n) return INT_MAX;
+//     // cout<<l<<" "<<r<<endl;
+//     int left = f(l-1,r,arr,n);
+//     if(l-1>=0) left += (arr[r]-arr[l-1]);
+//     int right = f(l,r+1,arr,n);
+//     if(r+1<n) right += (arr[r+1] - arr[l]);
+//     // cout<<l<<" "<<r<<" "<<left<<" "<<right<<endl;
+//     return min(left,right);
+// }
+
+int f(int l,int r,vector<int> &arr,int n,vector<vector<int>> &dp){
+    if(l==0 && r==n-1) return 0;
+    if(l<0 || r>=n) return INT_MAX;
+    // cout<<l<<" "<<r<<endl;
+    if(dp[l][r] != -1) return dp[l][r];
+    int left = f(l-1,r,arr,n,dp);
+    if(l-1>=0) left += (arr[r]-arr[l-1]);
+    int right = f(l,r+1,arr,n,dp);
+    if(r+1<n) right += (arr[r+1] - arr[l]);
+    // cout<<l<<" "<<r<<" "<<left<<" "<<right<<endl;
+    return dp[l][r] = min(left,right);
+}
+
 void solve(){
     int n;cin>>n;
-    vector<int> adj[n+1];
-    vector<pair<int,int>> vp;
-    for(int i=0;i<n-1;i++){
-        int u,v;
-        cin>>u>>v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
-        vp.push_back({u,v});
-    }
-    int ans = 0;
-    unordered_set<int> lnode;
-    for(int i=1;i<=n;i++) if(adj[i].size()==1) lnode.insert(i);
-    ans = lnode.size()*(n-lnode.size());
-    vector<int> inadj[n+1];
+    vector<int> arr(n,0);
+    for(int i=0;i<n;i++) cin>>arr[i];;
+    sort(arr.begin(),arr.end());
+    // for(int i=0;i<n;i++) cout<<arr[i]<<" ";
+    // cout<<endl;
+    vector<vector<int>> dp(n,vector<int>(n,-1));
+    int ans = INT_MAX;
     for(int i=0;i<n;i++){
-        int u = vp[i].first;
-        int v = vp[i].second;
-        if(lnode.count(u) || lnode.count(v)) continue;
-        inadj[u].push_back(v);
-        inadj[v].push_back(u);
+        // cout<<f(i,i,arr,n,dp)<<endl;
+        ans = min(ans,f(i,i,arr,n,dp));
     }
-
     cout<<ans<<endl;
 }
 
