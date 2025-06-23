@@ -53,39 +53,37 @@ using namespace std;
 //     cout<<ans<<endl;
 // }
 
-bool find(int st,int n,int p[],int d[],int k){
+// Red Light, Green Light (Easy version)
+bool find(int x,int p[],int d[],int k,int n){
     int ind = -1;
     for(int i=0;i<n;i++){
-        if(st <= p[i]){
+        if(x <=p[i]){
             ind = i;
             break;
         }
     }
+
     if(ind == -1) return true;
-    // cout<<ind<<endl;
-    map<int,int> mp;
-    bool rev = false;
-    bool first = true;
-    int cur = -1;
-    while(mp[cur]<3){
+
+    // staring the simulation
+    vector<int> vis(n,0);
+    int t = 0;
+    bool first = true,rev = false;
+    while(true){
         if(!rev){
+            // cout<<x<<" "<<t<<" "<<endl;
             bool flag = true;
             for(int i=ind;i<n;i++){
-                int x = 0;
-                if(first) x=abs(p[i]-st);
-                else x = abs(p[i]-p[cur]);
-                int len  = x;
-                if(!first) len += st;
-                if(d[i]>len) continue;
-                if(abs(len-d[i])%k == 0){
-                    // cout<<st<<" "<<cur<<" "<<len<<endl;
+                int dis = abs(p[i]-x);
+                int temp = t + dis;
+                if(abs(temp-d[i])%k==0){
+                    x = p[i];
+                    vis[i]++;
+                    t+=dis;
+                    if(vis[i] > 2) return false;
+                    ind = i-1;
                     flag = false;
                     rev = true;
-                    mp[i]++;
-                    cur = i;
-                    if(first) st = x;
-                    else st += x;
-                    ind = i-1;
                     break;
                 }
             }
@@ -93,48 +91,37 @@ bool find(int st,int n,int p[],int d[],int k){
         }else{
             bool flag = true;
             for(int i=ind;i>=0;i--){
-                int x = 0;
-                if(first) x=abs(p[i]-st);
-                else x = abs(p[i]-p[cur]);
-                int len  = x + st;
-                if(d[i]>len) continue;
-                if(abs(len-d[i])%k == 0){
-                    // cout<<st<<" "<<cur<<"*"<<len<<endl;
+                int dis = abs(p[i]-x);
+                int temp = t + dis;
+                if(abs(temp-d[i])%k==0){
+                    x = p[i];
+                    vis[i]++;
+                    t+=dis;
+                    if(vis[i] > 2) return false;
+                    ind = i+1;
                     flag = false;
                     rev = false;
-                    cur = i;
-                    mp[i]++;
-                    if(first) st = x;
-                    else st += x;
-                    ind = i+1;
                     break;
                 }
             }
-            if(flag) return false;
+            if(flag) return true;
         }
-        first = false;
     }
-    return false;
+    return true;
 }
 
 void solve(){
     int n,k;
     cin>>n>>k;
-    vector<int> vis(n,0);
     int p[n],d[n];
     for(int i=0;i<n;i++) cin>>p[i];
-    for(int j=0;j<n;j++) cin>>d[j];
-    
-    int q;cin>>q;
+    for(int i=0;i<n;i++) cin>>d[i];
     map<int,bool> mp;
-    for(int i=0;i<q;i++){
-        int st;cin>>st;
-        if(mp.find(st)==mp.end()){
-            mp[st] = find(st,n,p,d,k);
-
-        }
-        // cout<<st<<" "<<mp[st]<<endl;
-        (mp[st])?cout<<"Yes"<<endl:cout<<"No"<<endl;
+    int q;cin>>q;
+    while(q--){
+        int x;cin>>x;
+        if(mp.find(x) == mp.end()) mp[x] = find(x,p,d,k,n);
+        (mp[x])?cout<<"Yes"<<endl:cout<<"No"<<endl;
     }
 }
 
