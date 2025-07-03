@@ -92,6 +92,7 @@ struct Mint
     friend Mint operator*(Mint a, Mint const b) { return a *= b; }
     friend Mint operator/(Mint a, Mint const b) { return a /= b; }
     friend std::ostream &operator<<(std::ostream &os, Mint const &a) { return os << a.value; }
+    friend std::istream &operator>>(std::istream &is, Mint &a) {return is >> a.value;}
     friend bool operator==(Mint const &a, Mint const &b) { return a.value == b.value; }
     friend bool operator!=(Mint const &a, Mint const &b) { return a.value != b.value; }
 };

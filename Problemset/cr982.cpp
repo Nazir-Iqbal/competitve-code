@@ -7,90 +7,107 @@ using namespace std;
 // using namespace __gnu_pbds;
 
 #define int long long
-// #define nline "\n" 
+#define nline "\n" 
 
 // priority_queue <int, vector<int>, greater<int>> pq;
 // template <class T> using oset = tree<T, null_type, less<T>, rb_tree_tag,tree_order_statistics_node_update>;
 
 // void solve(){
 //     int n;cin>>n;
-//     int h[n],w[n];
-//     for(int i=0;i<n;i++) cin>>h[i]>>w[i];
-//     int ans = 2*((*max_element(h,h+n))+(*max_element(w,w+n)));
-//     cout<<ans<<endl;
+//     int maxa = INT_MIN , maxb = INT_MIN;
+//     for(int i=0;i<n;i++){
+//         int a,b;
+//         cin>>a>>b;
+//         maxa = max(a,maxa);
+//         maxb = max(b,maxb);
+//     }
+//     cout<<(maxa+maxb)*2<<endl;
 // }
 
 // void solve(){
 //     int n;cin>>n;
 //     int arr[n];
 //     for(int i=0;i<n;i++) cin>>arr[i];
+
 //     int ans = INT_MAX;
+
 //     for(int i=0;i<n;i++){
-//         vector<int> temp;
-//         int local = 0;
-//         for(int j=i+1;j<n;j++) if(arr[j]>arr[i]) local++;
-//         int _max = INT_MIN;
-//         for(int j=0;j<i;j++) _max = max(_max,arr[i]);
-//         if(_max>arr[i]){
-//             for(int j=0;j<i;j++){
-//                 if(arr[j] == _max){
-//                     local+=j;
-//                     break;
-//                 }
-//             }
-//         }else local += i;
-//         ans = min(ans,local);
+//         int moves = i;
+//         for(int j=i;j<n;j++){
+//             if(arr[j] > arr[i]) moves++;
+//         }
+//         ans = min(ans,moves);
 //     }
+
 //     cout<<ans<<endl;
+    
+// }
+
+// int recur(int sz,map<int,vector<int>> &mp,map<int,int> &dp){
+    
+//     if(dp.find(sz) != dp.end()) return dp[sz];
+
+//     int ans = sz;
+//     for(int &ele : mp[sz]){
+//         int len = sz + ele;
+//         if(mp.find(len) != mp.end()){
+//             ans = max(ans,recur(len,mp,dp));
+//         }
+//         else ans = max(len,ans);
+//     }
+//     return dp[sz] = ans;
 // }
 
 // void solve(){
 //     int n;cin>>n;
-//     int a[n+1];
-//     for(int i=1;i<=n;i++) cin>>a[i];
-//     vector<pair<int,int>> len;
-//     for(int i=1;i<=n;i++){
-//         len.push_back({a[i]+i-1,i});
+//     int arr[n];
+//     for(int i=0;i<n;i++) cin>>arr[i];
+//     map<int,vector<int>> mp;
+//     for(int i=1;i<n;i++){
+//         int sz = arr[i] + i;
+//         if(sz >= n) mp[sz].push_back(i);
 //     }
-//     sort(len.begin(),len.end());
-//     set<int> st;
-//     st.insert(n);
-//     int ans = n;
-//     for(int i=0;i<n;i++){
-//         if(st.find(len[i].first)!=st.end()){
-//             int num = len[i].first+len[i].second-1;
-//             st.insert(num);
-//             ans = max(ans,num);
-//         }
-//     }
-//     cout<<ans<<endl;
+
+//     map<int,int> dp;
+//     recur(n,mp,dp);
+
+//     cout<<dp[n]<<endl;
 // }
+
+int recur(int i,int j,int a[],int b[],int m,int n,vector<vector<int>> &dp){
+    
+    // base case
+    if(i>=n) return 0;
+    if(j>=m) return 1e9;
+    if(a[i] > b[j]) return 1e9;
+
+    if(dp[i][j] != -1) return dp[i][j];
+
+    int not_take = recur(i,j+1,a,b,m,n,dp);
+
+    // take
+    int sum = 0,ind = 0;
+    while(i+ind<n && sum + a[i+ind] <= b[j]) sum += a[i+ind],ind++;
+    // cout<<i<<" "<<j<<endl;
+    int take = (m-(j+1)) + recur(i+ind,j,a,b,m,n,dp);
+
+    return dp[i][j] = min(not_take,take);
+}
 
 void solve(){
     int n,m;
     cin>>n>>m;
-    int a[n+1],b[m+1];
-    for(int i=1;i<=n;i++) cin>>a[i];
-    for(int j=1;j<=m;j++) cin>>b[j];
-    vector<int> prefix(n+1,0);
-    for(int i=1;i<=n;i++) prefix[i] = a[i]+prefix[i-1];
-    vector<vector<int>> dp(n+1,vector<int>(m+1,1e18));
-    for(int i=0;i<=m;i++) dp[0][i] = 0;
-    for(int i=1;i<=n;i++){
-        for(int j=1;j<=m;j++){
-            dp[i][j]=dp[i][j-1];
-            if(a[i]<=b[j]){
-                int locate = prefix[i]-b[j];
-                int target = lower_bound(prefix.begin(),prefix.end(),locate)-prefix.begin();
-                if(dp[target][j]==1e18) continue;
-                int cost = min(dp[target][j],dp[target][j-1]) + (m-j);
-                dp[i][j] = min(dp[i][j],cost);
-            }
-        }
-    }
-    if(dp[n][m] >= 1e18) cout<<-1<<endl;
-    else cout<<dp[n][m]<<endl;
-}
+    int a[n],b[m];
+    for(int i=0;i<n;i++) cin>>a[i];
+    for(int i=0;i<m;i++) cin>>b[i];
+
+    vector<vector<int>> dp(n+1,vector<int>(m+1,-1));
+
+    int ans = recur(0,0,a,b,m,n,dp);
+
+    if(ans == 1e9) cout<<-1<<endl;
+    else cout<<ans<<endl;
+}  
 
 int32_t main(){
     freopen("input.txt","r",stdin);

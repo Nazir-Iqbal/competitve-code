@@ -12,37 +12,50 @@ using namespace std;
 // priority_queue <int, vector<int>, greater<int>> pq;
 // template <class T> using oset = tree<T, null_type, less<T>, rb_tree_tag,tree_order_statistics_node_update>;
 
-// int timer(string a){
-//     int num=0,temp=0;
-//     temp = (a[0]-'0')*10 + (a[1]-'0');
-//     num += temp*60;
-//     temp = (a[3]-'0')*10 + (a[4]-'0');
-//     num += temp;
-//     return num;
+// vector<vector<string>> getSearchResults(vector<string> words, vector<string> queries){
+//     map<string,vector<string>> mp;
+//     for(int i=0;i<words.size();i++){
+//         string temp = words[i];
+//         sort(temp.begin(),temp.end());
+//         mp[temp].push_back(words[i]);
+//     }
+//     vector<vector<string>> ans;
+//     for(int i=0;i<queries.size();i++){
+//         string temp = queries[i];
+//         sort(temp.begin(),temp.end());
+//         sort(mp[temp].begin(),mp[temp].end());
+//         ans.push_back(mp[temp]);
+//     }
+//     return ans;
 // }
 
-void solve(){
-    int n,x,y;
-    cin>>n>>x>>y;
-    string s;cin>>s;
-    int a = 0,b= 0;
-    for(int i=0;i<n;i++) (s[i] == 'a')?a++:b++;
-    int total = a*b;
-    if(total-x != y){
-        cout<<"Impossible"<<endl;
-        return;
+int findTotalWeight(vector<int> cans){
+    int n = cans.size();
+    vector<pair<int,int>> vp;
+    for(int i=0;i<n;i++) vp.push_back({cans[i],i});
+    sort(vp.begin(),vp.end());
+    vector<bool> used(n,0);
+    int sum = 0;
+    for(int i=0;i<n;i++){
+        int val = vp[i].first;
+        int ind = vp[i].second;
+        if(!used[ind]){
+            int left = ind-1,right = ind+1;
+            while(left>=0 && used[left]) left--;
+            while(right<n && used[right]) right++;
+            if(left>=0) used[left] = 1;
+            if(right<n) used[right] = 1;
+            sum += val;
+        }
     }
-    int fwd = x/b;
-    int bt = x%b;
-    if(bt == 0) bt = b;
-    string ans;
-    for(int i=0;i<fwd;i++) ans.push_back('a');
-    for(int i=0;i<bt;i++) ans.push_back('b');
-    if(b-fwd>0) ans.push_back('a');
-    for(int i=0;i<a-bt;i++) ans.push_back('b');
-    for(int i=0;i<(b-fwd-1);i++) ans.push_back('a');
-    cout<<"Possible"<<endl;
-    cout<<ans<<endl;
+    return sum;
+}
+
+void solve(){
+    int n;cin>>n;
+    vector<int> cans(n);
+    for(int i=0;i<n;i++) cin>>cans[i];
+    cout<<findTotalWeight(cans)<<endl;
 }
 
 int32_t main(){
@@ -52,9 +65,7 @@ int32_t main(){
     FIO;
     int t;cin>>t;
     while(t--){
-    //   if(solve()) cout<<1<<endl;
-    //   else cout<<0<<endl;
-        solve();
+      solve();
     }
 
     return 0;

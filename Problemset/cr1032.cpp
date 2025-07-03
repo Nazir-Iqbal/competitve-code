@@ -6,7 +6,7 @@ using namespace std;
 #define FIO             ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0)
 // using namespace __gnu_pbds;
 
-// #define int long long
+#define int long long
 // #define nline "\n" 
 
 // priority_queue <int, vector<int>, greater<int>> pq;
@@ -135,30 +135,107 @@ using namespace std;
 //     for(auto &ele : ans) cout<<ele.first<<" "<<ele.second+1<<endl;
 // }
 
+// void solve(){
+//     int l,r;
+//     cin>>l>>r;
+//     int ans = 0;
+//     vector<int> v1,v2;
+//     while(l>0 || r>0){
+//         int num1 = l%10;
+//         int num2 = r%10;
+//         v1.push_back(num1);
+//         v2.push_back(num2);
+//         l/=10;
+//         r/=10;
+//     }
+//     reverse(v1.begin(),v1.end());
+//     reverse(v2.begin(),v2.end());
+    
+//     int len = 0;
+//     int n = v1.size();
+//     for(int i=0;i<n;i++){
+//         if(v1[i] == v2[i]) len++;
+//         else break;
+//     }
+//     if(len == n) ans = 2*n;
+//     else{
+//         ans = 2*len;
+//         int ind = len;
+//         if(v2[ind]-v1[ind]==1){
+//             ans++; // adding the one due to being equal either from l or r
+//             int l1 = 0,l2 = 0;
+//             for(int i=ind+1;i<n;i++){
+//                 if(v1[i] == 9) l1++;
+//                 else break;
+//             }
+//             for(int i=ind+1;i<n;i++){
+//                 if(v2[i] == 0) l2++;
+//                 else break;
+//             }
+//             int temp1 = l1,temp2 = l2;
+//             if(l1+ind+1 < n){
+//                 if(v1[l1+ind+1]==8 && v2[l1+ind+1]==9) temp1++;
+//             }
+//             if(l2+ind+1 < n){
+//                 if(v2[l2+ind+1]==1 && v1[l2+ind+1]==0) temp2++;
+//             }
+//             // cout<<temp1<<" "<<temp2<<endl;
+//             ans += min(temp1,temp2);
+//         }
+//     }
+//     cout<<ans<<endl;
+// }
+
+// void solve(){
+//     int n,s,x;
+//     cin>>n>>s>>x;
+//     int arr[n];
+//     for(int i=0;i<n;i++) cin>>arr[i];
+//     map<int,vector<int>> mp;
+//     int ans = 0, left = -1, sum = 0;
+//     mp[0].push_back(-1);
+//     // cout<<"*"<<endl;
+//     for(int i=0;i<n;i++){
+//         if(arr[i] > x){
+//             mp.clear();
+//             left = -1;
+//             sum = 0;
+//             mp[0].push_back(i);
+//             // cout<<"*"<<endl;
+//         }else{
+//             sum += arr[i];
+//             if(arr[i] == x) left = i;
+//             int rem = sum-s;
+//             mp[sum].push_back(i);
+//             if(left == -1) continue;
+//             int sz = mp[rem].size();
+//             // cout<<sum<<" "<<rem<<" "<<ans<<" "<<left<<endl;
+//             if(sz == 0) continue;
+//             int ind = upper_bound(mp[rem].begin(),mp[rem].end(),left-1)-mp[rem].begin();
+//             ans += ind;
+//         }
+//     }
+//     cout<<ans<<endl;
+// }
+
 void solve(){
-    int l,r;
-    cin>>l>>r;
+    int n;cin>>n;
+    string s;cin>>s;
     int ans = 0;
-    vector<int> v1,v2;
-    while(l>0 || r>0){
-        int num1 = l%10;
-        int num2 = r%10;
-        v1.push_back(num1);
-        v2.push_back(num2);
-        l/=10;
-        r/=10;
+    for(int i=1;i<=n;i++){
+        ans += i*(n-i+1);
     }
-    reverse(v1.begin(),v1.end());
-    reverse(v2.begin(),v2.end());
-    for(int i=0;i<v1.size();i++){
-        if(v1[i] == v2[i]){
-            ans+=2;
-            continue;
-        }
-        if(abs(v1[i]-v2[i])==1) ans++;
-        break;
+    vector<int> prefix(n+1,0);
+    for(int i=1;i<=n;i++){
+        prefix[i] = prefix[i-1];
+        if(s[i-1]=='0') prefix[i]--;
+        else prefix[i]++;
     }
-    cout<<ans<<endl;
+    sort(prefix.begin(),prefix.end());
+    for(int i=0;i<=n;i++){
+        ans += prefix[i]*(i-(n-i));
+    }
+    cout<<ans/2<<endl;
 }
 
 int32_t main(){
