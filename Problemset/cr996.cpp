@@ -42,44 +42,81 @@ using namespace std;
 //     }
 // }
 
+// void solve(){
+//     int n,m;
+//     cin>>n>>m;
+//     string s;cin>>s;
+//     vector<vector<int>> v(n,vector<int>(m));
+//     for(int i=0;i<n;i++){
+//         for(int j=0;j<m;j++) cin>>v[i][j];
+//     }
+
+//     int row = 0,col = 0;
+//     for(int i=0;i<s.size();i++){
+//         int sum = 0;
+//         if(s[i] == 'D'){
+//             for(int j=0;j<m;j++){
+//                 if(j==col) continue;
+//                 sum += v[row][j];
+//             }
+//             v[row][col] = -sum;
+//             row++;
+//         }else{
+//             for(int j=0;j<n;j++){
+//                 if(j==row) continue;
+//                 sum += v[j][col];
+//             }
+//             v[row][col] = -sum;
+//             col++;
+//         }
+//     }
+//     int sum = 0;
+//     for(int i=0;i<n;i++){
+//         sum += v[i][m-1];
+//     }
+//     v[n-1][m-1] = -sum;
+//     for(int i=0;i<n;i++){
+//         for(int j=0;j<m;j++) cout<<v[i][j]<<" ";
+//         cout<<endl;
+//     }
+
+// }
+
 void solve(){
-    int n,m;
-    cin>>n>>m;
-    string s;cin>>s;
-    vector<vector<int>> v(n,vector<int>(m));
-    for(int i=0;i<n;i++){
-        for(int j=0;j<m;j++) cin>>v[i][j];
-    }
+    int n,k,l;
+    cin>>n>>k>>l;
+    k<<=1;
+    l<<=1;
+    int arr[n];
+    for(int i=0;i<n;i++) cin>>arr[i];
+    for(int i=0;i<n;i++) arr[i]<<=1;
 
-    int row = 0,col = 0;
-    for(int i=0;i<s.size();i++){
-        int sum = 0;
-        if(s[i] == 'D'){
-            for(int j=0;j<m;j++){
-                if(j==col) continue;
-                sum += v[row][j];
-            }
-            v[row][col] = -sum;
-            row++;
+    int time = arr[0];
+    int ptr = 1;
+    int pos = k;
+
+    while(ptr<n && pos<l){
+
+        if(abs(pos-arr[ptr])<=time){
+            arr[ptr] = pos;
+
+        }else if(arr[ptr]<=pos){
+            arr[ptr] += time;
+            pos = arr[ptr] + k;
+            ptr++;
+            continue;
         }else{
-            for(int j=0;j<n;j++){
-                if(j==row) continue;
-                sum += v[j][col];
-            }
-            v[row][col] = -sum;
-            col++;
+            arr[ptr] -= time;
         }
-    }
-    int sum = 0;
-    for(int i=0;i<n;i++){
-        sum += v[i][m-1];
-    }
-    v[n-1][m-1] = -sum;
-    for(int i=0;i<n;i++){
-        for(int j=0;j<m;j++) cout<<v[i][j]<<" ";
-        cout<<endl;
-    }
 
+        int diff = arr[ptr]-pos;
+        time += (diff/2);
+        arr[ptr] -= diff/2;
+        pos = arr[ptr] + k;
+        ptr++;
+    }
+    if(pos<l) time += (l-pos);
+    cout<<time<<endl;
 }
 
 int32_t main(){
